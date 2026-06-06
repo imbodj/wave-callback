@@ -3,95 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paiement reçu</title>
+  <title>Maths Terminale S Quiz</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      background: #f0f4f8;
-    }
-    .card {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-      max-width: 400px;
-      width: 90%;
-    }
-    .code {
-      font-size: 1.2rem;
-      font-weight: bold;
-      background: #f0f4f8;
-      padding: 1rem;
-      border-radius: 8px;
-      margin: 1rem 0;
-      word-break: break-all;
-      letter-spacing: 1px;
-    }
-    .status { margin-top: 1rem; color: #666; }
-    .success { color: #22c55e; font-size: 3rem; }
-    .error   { color: #ef4444; }
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center;
+           align-items: center; min-height: 100vh; margin: 0; background: #1B5E20; }
+    .card { background: white; padding: 2rem; border-radius: 16px;
+            text-align: center; max-width: 400px; width: 90%; }
+    h1 { color: #1B5E20; }
+    p { color: #555; }
+    .badge { background: #E8F5E9; color: #1B5E20; padding: 8px 16px;
+             border-radius: 20px; font-weight: bold; display: inline-block; margin: 8px 0; }
   </style>
 </head>
 <body>
 <div class="card">
-  <div class="success">✅</div>
-  <h2>Paiement reçu !</h2>
-  <p>Votre code d'accès :</p>
-  <div class="code" id="code">Chargement...</div>
-  <div class="status" id="status">Enregistrement en cours...</div>
-  <p style="margin-top:2rem; font-size:0.9rem; color:#666;">
-    Copiez ce code et entrez-le dans l'application<br>
-    <strong>Maths Terminale S Quiz</strong>
+  <h1>🧮 Maths Terminale S Quiz</h1>
+  <p>Application de révision pour les élèves de Terminale S au Sénégal.</p>
+  <div class="badge">12 chapitres · 240 questions</div><br>
+  <div class="badge">500 FCFA · 1 an d'accès</div>
+  <p style="margin-top:1.5rem; font-size:0.9rem; color:#888;">
+    Disponible sur Google Play Store
   </p>
 </div>
-
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwStDb18FLv-ocE-EExqHqC5d5E4BaXkPHTytdXKbqvVbAiPI6kJhAPCwcMRnP9rrxIgw/exec';
-
-  async function init() {
-    // Lire l'ID de transaction dans l'URL
-    const params = new URLSearchParams(window.location.search);
-    const tx = (params.get('tx') || params.get('transaction_id') || '').trim().toUpperCase();
-
-    const codeEl  = document.getElementById('code');
-    const statusEl= document.getElementById('status');
-
-    if (!tx) {
-      codeEl.textContent   = 'Code introuvable';
-      statusEl.textContent = 'Paramètre manquant dans l\'URL.';
-      statusEl.className   = 'status error';
-      return;
-    }
-
-    codeEl.textContent = tx;
-
-    // Envoyer le code au script pour l'enregistrer dans la Sheet
-    try {
-      const resp = await fetch(SCRIPT_URL, {
-        method : 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body   : 'code=' + encodeURIComponent(tx) + '&action=register'
-      });
-      const result = await resp.text();
-
-      if (result === 'OK' || result === 'ALREADY_REGISTERED') {
-        statusEl.textContent = '✅ Code enregistré. Entrez-le dans l\'app.';
-      } else {
-        statusEl.textContent = 'Statut : ' + result;
-      }
-    } catch(e) {
-      statusEl.textContent = '⚠️ Erreur réseau. Notez votre code quand même.';
-      statusEl.className   = 'status error';
-    }
-  }
-
-  init();
+  // Si paramètre tx présent → page de confirmation paiement
+  const params = new URLSearchParams(window.location.search);
+  const tx = params.get('tx');
+  if (tx) window.location.href = '/wave-callback/confirm.html' + window.location.search;
 </script>
 </body>
 </html>
